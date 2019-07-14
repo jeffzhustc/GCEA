@@ -5,5 +5,5 @@ config = Config()
 
 class Molecule(object):
     def __init__(self):
-
+        print('hahah')
         pass

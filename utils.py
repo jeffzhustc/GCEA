@@ -1,6 +1,17 @@
 '''this file is just for general function'''
 import rdkit.Chem as Chem
 import networkx as nx
+from config import Config
+import numpy as np
+
+config = Config()
+
+# mask the matrix to find valid row to take mutation or crossover operation
+def mask(expand_adj):
+    node_num = np.count_nonzero(expand_adj.diagonal())
+    row_sum = np.sum(expand_adj[:node_num, :node_num], axis=0)
+    mask_row = np.argwhere(row_sum < config.full_valence.squeeze(axis=1).tolist()
+    return mask_row
 
 # adj2mol is to convert adjacent matrix into mol object in rdkit
 def adj2mol(nodes, adj, possible_bonds):

@@ -88,7 +88,8 @@ class Population(object):
         '''temp_mat for expand_mat, temp_node_list for node_list'''
         return temp_mat, temp_node_list
 
-    def combine_two_subgraph(subg1, subg2):
+    # combine two subgraph to get an new graph represented as a molecule
+    def _combine_two_subgraph(self, subg1, subg2):
         len1, len2 = subg1.shape[0], subg2.shape[0]
         goal_adj = np.zeros([len1 + len2, len1 + len2])
         goal_adj[:len1, :len1] = subg1
@@ -101,11 +102,12 @@ class Population(object):
         goal_adj[index2, index1] = 1
         return goal_adj
 
+    # we sample from two molecule and get an new molecule after mutation
     def crossover(self, mol1, mol2):
         temp_mat1, temp_node_list1 = self._bfs_molecule(mol1)
         temp_mat2, temp_node_list2 = self._bfs_molecule(mol2)
 
-        goal_mat = self.combine_two_subgraph(temp_mat1, temp_mat2).astype(int)
+        goal_mat = self._combine_two_subgraph(temp_mat1, temp_mat2).astype(int)
         goal_list = temp_node_list1 + temp_node_list2
         adj = goal_mat
         for i in range(len(goal_list)):

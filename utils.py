@@ -1,5 +1,6 @@
-'''this file is just for '''
+'''this file is just for general function'''
 import rdkit.Chem as Chem
+import networkx as nx
 
 # adj2mol is to convert adjacent matrix into mol object in rdkit
 def adj2mol(nodes, adj, possible_bonds):
@@ -17,6 +18,7 @@ def adj2mol(nodes, adj, possible_bonds):
 
     return mol
 
+# mol2nx is to convert mol object in rdkit into network object
 def mol2nx(mol):
     G = nx.Graph()
 

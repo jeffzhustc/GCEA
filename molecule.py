@@ -8,8 +8,9 @@ import numpy as np
 
 config = Config()
 
+'''Molecule's object class be an individual in population for evolutionary algorithm'''
 class Molecule(object):
-    def __init__(self, smiles):
+    def __init__(self, smiles, ):
         self.smiles = smiles
 
         self.adj = self._get_adj_mat(smiles)
@@ -24,6 +25,8 @@ class Molecule(object):
             'J_socre' : calc_score(self.mol)
         }
 
+        self.possbile_bonds = config.possible_bonds
+
     def _get_adj_mat(self, smiles):
         mol = Chem.MolFromSmiles(smiles)
         Chem.Kekulize(mol)
@@ -33,6 +36,6 @@ class Molecule(object):
         bond_list = nx.get_edge_attributes(G, 'bond_type')
         for edge in G.edges():
             first, second = edge
-            adj[[first], [second]] = possible_bonds.index(bond_list[first, second]) + 1
-            adj[[second], [first]] = possible_bonds.index(bond_list[first, second]) + 1
+            adj[[first], [second]] = self.possible_bonds.index(bond_list[first, second]) + 1
+            adj[[second], [first]] = self.possible_bonds.index(bond_list[first, second]) + 1
         return adj

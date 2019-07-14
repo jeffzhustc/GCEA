@@ -6,17 +6,16 @@ from score_util import calc_score
 from utils import *
 import numpy as np
 
-config = Config()
+#config = Config()
 
 '''Molecule's object class be an individual in population for evolutionary algorithm'''
 class Molecule(object):
-    def __init__(self, smiles, ):
+    def __init__(self, smiles, config):
         self.smiles = smiles
 
         self.adj = self._get_adj_mat(smiles)
         self.node_list = self._get_node_list(smiles)
         self.num_atom = len(self.node_list)
-        self.diag_mat = self._get_diag_mat(self.node_list)
         self.expand_mat = self._get_expand_mat(self.adj, self.diag_mat)
         self.mol = Chem.MolFromSmiles(smiles)
 
@@ -25,7 +24,9 @@ class Molecule(object):
             'J_socre' : calc_score(self.mol)
         }
 
-        self.possbile_bonds = config.possible_bonds
+        self.possible_bonds = config.possible_bonds
+        self.table_of_elements = config.table_of_elements
+        self.vovocab_nodes_encode = config.vocab_nodes_encode
 
     def _get_adj_mat(self, smiles):
         mol = Chem.MolFromSmiles(smiles)
@@ -39,3 +40,26 @@ class Molecule(object):
             adj[[first], [second]] = self.possible_bonds.index(bond_list[first, second]) + 1
             adj[[second], [first]] = self.possible_bonds.index(bond_list[first, second]) + 1
         return adj
+
+    def _get_node_list(self, smiles):
+        mol = Chem.MolFromSmiles(smiles)
+        G = mol2nx(mol)
+        atomic_nums = nx.get_node_attributes(G, 'atomic_num')
+        node_list = []
+        for i in range(len(atomic_nums)):
+            try:
+                node_list.append(self.table_of_elements[atomic_nums[i]])
+            except KeyError:
+                pass
+        return node_list
+
+    def _get_expand_mat(self, adj, node_list):
+        def _get_diag_mat(node_list):
+            length = len(node_list)
+            diag_mat = np.zeros([length, length])
+            for i in range(length):
+                diag_mat[[i], [i]] = self.vocab_nodes_encode[node_list[i]]
+            return diag_mat
+
+        diag_mat = _get_diag_mat(node_list)
+        return adj + diag_mat

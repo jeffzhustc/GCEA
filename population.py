@@ -6,10 +6,8 @@ from queue import Queue
 from utils import *
 from random import *
 
-config = Config()
-
 class Population(object):
-    def __init__(self, ):
+    def __init__(self, config):
         self.population_pool = []
         self.population_size = config.poplution_size
         self.init_poplution_file_name = config.init_poplution_file_name

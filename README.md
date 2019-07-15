@@ -1,4 +1,4 @@
-### Graph based Chemical Evolutionary Algorithm
+### <center>Graph based Chemical Evolutionary Algorithm</center>
 
 #### File Description
 
@@ -13,3 +13,6 @@ File mutation.py is employed for mutating for generic algorithm.
 File population.py implements population and individual crossover operation for generic algorithm.
 
 File utils.py is for commonly used functions.
+
+Dictionary data stores used data.
+

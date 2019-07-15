@@ -1,9 +1,19 @@
-'''this file is for mutation operation in evolutionary algorithm'''
-
+from score_util import *
+import numpy as np
 from utils import *
 from molecule import Molecule
 
 deconfig = Config()
+
+def mutate(molecule):
+    mutate_rate = deconfig.mutation_rate
+    choice = np.random.choice(3, 1, mutate_rate)
+    if choice[0] == 0:
+        return _add_atom(molecule)
+    if choice[0] == 1:
+        return _add_atom_between_bond(molecule)
+    if choice[0] == 2:
+        return _add_bond(molecule)
 
 def _add_bond(molecule):
     if molecule.num_atom < 2:
@@ -14,6 +24,7 @@ def _add_bond(molecule):
     mask_row = mask(temp_expand_adj)
 
     goal_mol = None
+    goal_smiles = None
 
     for i in mask_row:
         row = temp_adj[i]
@@ -35,13 +46,8 @@ def _add_bond(molecule):
         return molecule
 
 def _add_atom_between_bond(molecule):
-    temp_elements = {
-        0: 'C',
-        1: 'N',
-        2: 'O',
-        3: 'S'
-    }
-    atom_index = np.random.choice(4, 1)[0]
+    temp_elements = deconfig.temp_elements
+    atom_index = np.random.choice(deconfig.length_elements, 1)[0]
     atom = temp_elements[atom_index]
 
     temp_adj = molecule.adj
@@ -68,4 +74,39 @@ def _add_atom_between_bond(molecule):
     goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
     goal_smiles = Chem.MolToSmiles(goal_mol)
 
+    return Molecule(goal_smiles)
+
+def _add_atom(molecule):
+    if molecule.num_atom < 1:
+        return molecule
+
+    temp_node_list = molecule.node_list
+    #print(len(temp_node_list))
+    temp_expand_adj = molecule.expand_mat
+    #print(temp_expand_adj.shape[0])
+    temp_adj = molecule.adj
+    mask_row = mask(temp_expand_adj)
+
+    temp_elements = deconfig.temp_elements
+
+    atom_index = np.random.choice(deconfig.length_elements, 1)[0]
+    atom = temp_elements[atom_index]
+    mask_row = mask(temp_expand_adj)
+    if len(mask_row) < 1:
+        return molecule
+    mask_index = np.random.choice(mask_row, 1)[0]
+
+    goal_length = molecule.num_atom + 1
+    goal_adj = np.zeros([goal_length, goal_length])
+    goal_adj[:goal_length-1 , :goal_length-1] = temp_adj
+    goal_adj[goal_length-1, mask_index] = goal_adj[mask_index, goal_length-1] = 1
+
+    temp_node_list.append(atom)
+    goal_node_list = temp_node_list
+
+    try:
+        goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
+    except IndexError:
+        pass
+    goal_smiles = Chem.MolToSmiles(goal_mol)
     return Molecule(goal_smiles)

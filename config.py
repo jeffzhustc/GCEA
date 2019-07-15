@@ -29,3 +29,14 @@ class Config(object):
         self.crossover_sigma = 0.1
         self.graph_size = 80
         self.full_valence = 5
+        self.mutation_rate = [0.45, 0.45, 0.1]
+        self.temp_elements = {
+            0: 'C',
+            1: 'N',
+            2: 'O',
+            3: 'F',
+            4: 'S',
+            5: 'Cl',
+            6: 'Br'
+        }
+        self.length_elements = len(self.temp_elements)

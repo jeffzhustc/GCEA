@@ -24,7 +24,7 @@ class Population(object):
     def _init_population(self):
         init_data = Chem.SDMolSupplier(self.init_poplution_file_name)
         for i in range(self.population_size):
-            self.population_pool.append(Molecule(Chem.MolToSmiles(init_data[i])))
+            self.population_pool.append(Molecule(Chem.MolToSmiles(init_data[i]), config))
 
     # using BFS to sample a subgraph from parent molecule
     def _bfs_molecule(self, molecule):
@@ -112,4 +112,15 @@ class Population(object):
             adj[i,i] = 0
         mol_temp = adj2mol(goal_list, adj, self.possible_bonds)
 
-        return Molecule(Chem.MolToSmiles(mol_temp))
+        return Molecule(Chem.MolToSmiles(mol_temp), config)
+
+
+# import rdkit.Chem.Draw as Draw
+#
+# config = Config()
+# pop_test = Population(config)
+# mol_test = pop_test.population_pool[0]
+# test_mat, test_node_list = pop_test._bfs_molecule(mol_test)
+# new_mol = adj2mol(test_node_list, test_mat, config.possible_bonds)
+# Draw.MolToFile(mol_test.mol, 'old_mol.png')
+# Draw.MolToFile(new_mol, 'new_mol.png')

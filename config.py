@@ -24,7 +24,7 @@ class Config(object):
         }
         self.poplution_size = 500
         self.crossover_rate = 0.8
-        self.init_poplution_file_name = 'data/init_population.sdf'
+        self.init_poplution_file_name = '/home/jeffzhu/aaai_ga/data/randomv2.sdf'
         self.crossover_mu = 0.5
         self.crossover_sigma = 0.1
         self.graph_size = 80
@@ -40,3 +40,5 @@ class Config(object):
             6: 'Br'
         }
         self.length_elements = len(self.temp_elements)
+
+        self.mutate_rate = 0.03

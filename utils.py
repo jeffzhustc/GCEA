@@ -10,7 +10,7 @@ config = Config()
 def mask(expand_adj):
     node_num = np.count_nonzero(expand_adj.diagonal())
     row_sum = np.sum(expand_adj[:node_num, :node_num], axis=0)
-    mask_row = np.argwhere(row_sum < config.full_valence.squeeze(axis=1).tolist())
+    mask_row = np.argwhere(row_sum < config.full_valence).squeeze(axis=1).tolist()
     return mask_row
 
 # adj2mol is to convert adjacent matrix into mol object in rdkit

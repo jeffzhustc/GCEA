@@ -13,20 +13,20 @@ class Molecule(object):
     def __init__(self, smiles, config):
         self.smiles = smiles
 
+        self.possible_bonds = config.possible_bonds
+        self.table_of_elements = config.table_of_elements
+        self.vocab_nodes_encode = config.vocab_nodes_encode
+        self.mol = Chem.MolFromSmiles(smiles)
+
         self.adj = self._get_adj_mat(smiles)
         self.node_list = self._get_node_list(smiles)
         self.num_atom = len(self.node_list)
-        self.expand_mat = self._get_expand_mat(self.adj, self.diag_mat)
-        self.mol = Chem.MolFromSmiles(smiles)
+        self.expand_mat = self._get_expand_mat(self.adj, self.node_list)
 
         self.property = {
-            'qed' : qed(self.mol),
-            'J_socre' : calc_score(self.mol)
+            'qed': qed(self.mol),
+            'J_score': calc_score(self.mol)
         }
-
-        self.possible_bonds = config.possible_bonds
-        self.table_of_elements = config.table_of_elements
-        self.vovocab_nodes_encode = config.vocab_nodes_encode
 
     def _get_adj_mat(self, smiles):
         mol = Chem.MolFromSmiles(smiles)

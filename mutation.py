@@ -41,7 +41,7 @@ def _add_bond(molecule):
             break
 
     if goal_mol != None:
-        return Molecule(goal_smiles)
+        return Molecule(goal_smiles, deconfig)
     else:
         return molecule
 
@@ -56,6 +56,7 @@ def _add_atom_between_bond(molecule):
     insert_index1 = np.random.choice(length, 1)
     insert_row = temp_adj[insert_index1][0]
 
+    insert_index2 = 0
     for i in range(len(insert_row)):
         if insert_row[i] > 0:
             insert_index2 = i
@@ -74,7 +75,7 @@ def _add_atom_between_bond(molecule):
     goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
     goal_smiles = Chem.MolToSmiles(goal_mol)
 
-    return Molecule(goal_smiles)
+    return Molecule(goal_smiles, deconfig)
 
 def _add_atom(molecule):
     if molecule.num_atom < 1:
@@ -85,7 +86,6 @@ def _add_atom(molecule):
     temp_expand_adj = molecule.expand_mat
     #print(temp_expand_adj.shape[0])
     temp_adj = molecule.adj
-    mask_row = mask(temp_expand_adj)
 
     temp_elements = deconfig.temp_elements
 
@@ -104,9 +104,6 @@ def _add_atom(molecule):
     temp_node_list.append(atom)
     goal_node_list = temp_node_list
 
-    try:
-        goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
-    except IndexError:
-        pass
+    goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
     goal_smiles = Chem.MolToSmiles(goal_mol)
-    return Molecule(goal_smiles)
+    return Molecule(goal_smiles, deconfig)

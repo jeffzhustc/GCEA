@@ -22,7 +22,7 @@ def adj2mol(nodes, adj, possible_bonds):
         atom = Chem.Atom(nodes[i])
         mol.AddAtom(atom)
 
-    for i in range(len(nodes)):
+    for i in range(len(nodes)-1):
         for j in range(i + 1, len(nodes)):
             if adj[i, j]:
                 mol.AddBond(i, j, possible_bonds[adj[i, j] - 1])

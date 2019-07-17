@@ -34,10 +34,7 @@ class Config(object):
             0: 'C',
             1: 'N',
             2: 'O',
-            3: 'F',
-            4: 'S',
-            5: 'Cl',
-            6: 'Br'
+            3: 'S',
         }
         self.length_elements = len(self.temp_elements)
 

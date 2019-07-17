@@ -19,7 +19,7 @@ parameters = {
     'pop_size' : [50,50,100,100,500,500,2000,2000],
     'is_mutate' : [True,False,True,False,True,False,True,False],
     'logger_name' : ['parameters'+str(i)+'.log' for i in range(8)],
-    'time_count' : 30
+    'time_count' : 40
 }
 
 def get_logger(logger_name):
@@ -31,7 +31,7 @@ def get_logger(logger_name):
     return logger
 
 time_count = 0
-def train(pop, logger, property_name='J_score', is_mutate=False, delta_time=1800):
+def train(pop, logger, property_name='J_score', is_mutate=False, delta_time=120):
     time_count = 0
     starttime = (int)(time.time())
 
@@ -70,7 +70,11 @@ def train(pop, logger, property_name='J_score', is_mutate=False, delta_time=1800
         currenttime = (int)(time.time())
         if (currenttime - starttime) > delta_time:
             starttime = currenttime
+            #print('ok')
             logger.info('mean is : '+ str(np.mean(res_score)) + ' std is : '+ str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
+            time_count += 1
+            if np.std(res_score) < 1e-6:
+                break
 
 for i in range(8):
     config.poplution_size = parameters['pop_size'][i]

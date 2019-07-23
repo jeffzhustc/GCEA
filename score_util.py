@@ -7,6 +7,7 @@ from rdkit import rdBase
 
 import sascorer
 
+
 def calc_score(mol):
     logP_mean = 2.457  # np.mean(logP_values)
     logP_std = 1.434  # np.std(logP_values)
@@ -20,7 +21,8 @@ def calc_score(mol):
         return -1e10
     current_log_P_value = Descriptors.MolLogP(molecule)
     current_SA_score = -sascorer.calculateScore(molecule)
-    cycle_list = nx.cycle_basis(nx.Graph(rdmolops.GetAdjacencyMatrix(molecule)))
+    cycle_list = nx.cycle_basis(
+        nx.Graph(rdmolops.GetAdjacencyMatrix(molecule)))
     if len(cycle_list) == 0:
         cycle_length = 0
     else:
@@ -32,8 +34,10 @@ def calc_score(mol):
     current_cycle_score = -cycle_length
 
     current_SA_score_normalized = (current_SA_score - SA_mean) / SA_std
-    current_log_P_value_normalized = (current_log_P_value - logP_mean) / logP_std
-    current_cycle_score_normalized = (current_cycle_score - cycle_mean) / cycle_std
+    current_log_P_value_normalized = (
+        current_log_P_value - logP_mean) / logP_std
+    current_cycle_score_normalized = (
+        current_cycle_score - cycle_mean) / cycle_std
 
     score = (current_SA_score_normalized
              + current_log_P_value_normalized

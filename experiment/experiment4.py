@@ -16,25 +16,28 @@ config = Config()
 pop = Population(config)
 
 parameters = {
-    'pop_size' : [50,50,100,100,500,500,2000,2000],
-    'is_mutate' : [True,False,True,False,True,False,True,False],
-    'logger_name' : ['parameters'+str(i)+'.log' for i in range(8)],
-    'time_count' : 30,
-    'property_name':'qed',
-    'target':0.8
+    'pop_size': [50, 50, 100, 100, 500, 500, 2000, 2000],
+    'is_mutate': [True, False, True, False, True, False, True, False],
+    'logger_name': ['parameters'+str(i)+'.log' for i in range(8)],
+    'time_count': 30,
+    'property_name': 'qed',
+    'target': 0.8
 }
 
 ''' object function for molecule targeting optimization
     Input: Molecule object
 '''
+
+
 class Obj_fun():
-    def __init__(self,property_name, target):
+    def __init__(self, property_name, target):
         self.property_name = property_name
         self.target = target
 
     def __call__(self, molecule):
 
         return abs(molecule.property[self.property_name] - self.target)
+
 
 def get_logger(logger_name):
     logging.basicConfig(level=logging.INFO,
@@ -44,7 +47,9 @@ def get_logger(logger_name):
     logger = logging.getLogger(__name__)
     return logger
 
+
 time_count = 0
+
 
 def train(pop, logger, obj_fun, is_mutate=False, delta_time=1800):
     time_count = 0
@@ -63,7 +68,8 @@ def train(pop, logger, obj_fun, is_mutate=False, delta_time=1800):
             temp_pool.append(new_mol)
 
         if is_mutate:
-            mutate_index = np.random.choice(num_new_atom, int(num_new_atom*config.mutate_rate), replace=False)
+            mutate_index = np.random.choice(num_new_atom, int(
+                num_new_atom*config.mutate_rate), replace=False)
             for i in mutate_index:
                 temp_molecule = copy.deepcopy(pop.population_pool[i])
                 new_molecule = mutate(temp_molecule)
@@ -72,29 +78,29 @@ def train(pop, logger, obj_fun, is_mutate=False, delta_time=1800):
 
         total = temp_pool + pop.population_pool
         total = set(total)
-        res = sorted(total, key=lambda x:obj_fun(x), reverse=True)
+        res = sorted(total, key=lambda x: obj_fun(x), reverse=True)
 
         res_score = [obj_fun(res[i]) for i in range(pop.population_size)]
-        print('mean is : '+ str(np.mean(res_score)) + ' std is : ' + str(np.std(res_score)) + ' max is : '+ str(np.max(res_score)))
+        print('mean is : ' + str(np.mean(res_score)) + ' std is : ' +
+              str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
 
         pop.population_pool = []
         for i in range(pop.population_size):
             pop.population_pool.append(res[i])
-        #max_pool.append(res[0])
+        # max_pool.append(res[0])
 
         currenttime = (int)(time.time())
         if (currenttime - starttime) > delta_time:
             starttime = currenttime
-            logger.info('mean is : '+ str(np.mean(res_score)) + ' std is : '+ str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
-
-
+            logger.info('mean is : ' + str(np.mean(res_score)) + ' std is : ' +
+                        str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
 
 
 for i in range(8):
     config.poplution_size = parameters['pop_size'][i]
     pop = Population(config)
-    obj_fun = Obj_fun(parameters['property_name'],parameters['target'])
+    obj_fun = Obj_fun(parameters['property_name'], parameters['target'])
     logger = get_logger(parameters['logger_name'][i])
     is_mutate = parameters['is_mutate'][i]
 
-    train(pop,logger,obj_fun,is_mutate=True)
+    train(pop, logger, obj_fun, is_mutate=True)

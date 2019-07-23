@@ -6,6 +6,7 @@ from queue import Queue
 from utils import *
 from random import *
 
+
 class Population(object):
     def __init__(self, config):
         self.population_pool = []
@@ -24,7 +25,8 @@ class Population(object):
     def _init_population(self):
         init_data = Chem.SDMolSupplier(self.init_poplution_file_name)
         for i in range(self.population_size):
-            self.population_pool.append(Molecule(Chem.MolToSmiles(init_data[i]), config))
+            self.population_pool.append(
+                Molecule(Chem.MolToSmiles(init_data[i]), config))
 
     # using BFS to sample a subgraph from parent molecule
     def _bfs_molecule(self, molecule):
@@ -70,7 +72,7 @@ class Population(object):
         '''reconstruct the subgraph in adj form'''
         num_atom = len(res)
         temp_mat = np.zeros([num_atom, num_atom])
-        #print(res)
+        # print(res)
         for i in range(num_atom - 1):
             for j in range(1, num_atom):
                 temp_mat[i, j] = molecule.expand_mat[res[i], res[j]]
@@ -80,7 +82,7 @@ class Population(object):
         length = len(temp_node_list)
 
         for i in range(length):
-            temp_mat[i,i] = self.vocab_nodes_encode[temp_node_list[i]]
+            temp_mat[i, i] = self.vocab_nodes_encode[temp_node_list[i]]
         # mol = adj2mol(temp_node_list, temp_mat, possible_bonds)
         # Draw.MolToFile(mol, 'test2.png')
         '''temp_mat for expand_mat, temp_node_list for node_list'''
@@ -109,7 +111,7 @@ class Population(object):
         goal_list = temp_node_list1 + temp_node_list2
         adj = goal_mat
         for i in range(len(goal_list)):
-            adj[i,i] = 0
+            adj[i, i] = 0
         mol_temp = adj2mol(goal_list, adj, self.possible_bonds)
 
         return Molecule(Chem.MolToSmiles(mol_temp), config)

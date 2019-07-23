@@ -16,11 +16,12 @@ config = Config()
 pop = Population(config)
 
 parameters = {
-    'pop_size' : [100,100,500,500],
-    'is_mutate' : [True,False,True,False],
-    'logger_name' : ['parameters'+str(i)+'.log' for i in range(4)],
-    'time_count' : 40
+    'pop_size': [100, 100, 500, 500],
+    'is_mutate': [True, False, True, False],
+    'logger_name': ['parameters'+str(i)+'.log' for i in range(4)],
+    'time_count': 40
 }
+
 
 def get_logger(logger_name):
     logging.basicConfig(level=logging.INFO,
@@ -30,7 +31,10 @@ def get_logger(logger_name):
     logger = logging.getLogger(__name__)
     return logger
 
+
 time_count = 0
+
+
 def train(pop, logger, property_name='J_score', is_mutate=False, delta_time=120):
     time_count = 0
     starttime = (int)(time.time())
@@ -48,7 +52,8 @@ def train(pop, logger, property_name='J_score', is_mutate=False, delta_time=120)
             temp_pool.append(new_mol)
 
         if is_mutate:
-            mutate_index = np.random.choice(num_new_atom, int(num_new_atom*config.mutate_rate), replace=False)
+            mutate_index = np.random.choice(num_new_atom, int(
+                num_new_atom*config.mutate_rate), replace=False)
             for i in mutate_index:
                 temp_molecule = copy.deepcopy(pop.population_pool[i])
                 new_molecule = mutate(temp_molecule)
@@ -57,24 +62,29 @@ def train(pop, logger, property_name='J_score', is_mutate=False, delta_time=120)
 
         total = temp_pool + pop.population_pool
         total = set(total)
-        res = sorted(total, key=lambda x:x.property[property_name], reverse=True)
+        res = sorted(
+            total, key=lambda x: x.property[property_name], reverse=True)
 
-        res_score = [res[i].property[property_name] for i in range(pop.population_size)]
-        print('mean is : '+ str(np.mean(res_score)) + ' std is : ' + str(np.std(res_score)) + ' max is : '+ str(np.max(res_score)))
+        res_score = [res[i].property[property_name]
+                     for i in range(pop.population_size)]
+        print('mean is : ' + str(np.mean(res_score)) + ' std is : ' +
+              str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
 
         pop.population_pool = []
         for i in range(pop.population_size):
             pop.population_pool.append(res[i])
-        #max_pool.append(res[0])
+        # max_pool.append(res[0])
 
         currenttime = (int)(time.time())
         if (currenttime - starttime) > delta_time:
             starttime = currenttime
             print('ok')
-            logger.info('mean is : '+ str(np.mean(res_score)) + ' std is : '+ str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
+            logger.info('mean is : ' + str(np.mean(res_score)) + ' std is : ' +
+                        str(np.std(res_score)) + ' max is : ' + str(np.max(res_score)))
             time_count += 1
             if np.std(res_score) < 1e-6:
                 break
+
 
 for i in range(4):
     config.poplution_size = parameters['pop_size'][i]
@@ -82,4 +92,4 @@ for i in range(4):
     logger = get_logger(parameters['logger_name'][i])
     is_mutate = parameters['is_mutate'][i]
 
-    train(pop,logger,is_mutate=is_mutate)
+    train(pop, logger, is_mutate=is_mutate)

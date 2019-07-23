@@ -2,9 +2,11 @@ import pickle
 import random
 import rdkit.Chem as Chem
 
+
 def change_random_molecule(config):
     random_size = config.poplution_size
-    data = pickle.load(open('/home/jeffzhu/aaai_ga/data/zinc_clean_smi.pkl', 'rb'))
+    data = pickle.load(
+        open('/home/jeffzhu/aaai_ga/data/zinc_clean_smi.pkl', 'rb'))
     length = len(data)
 
     random_index = random.choice(length, random_size)
@@ -14,5 +16,3 @@ def change_random_molecule(config):
 
     for i in random_pool:
         w.write(i)
-
-        

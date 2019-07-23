@@ -9,6 +9,8 @@ import numpy as np
 #config = Config()
 
 '''Molecule's object class be an individual in population for evolutionary algorithm'''
+
+
 class Molecule(object):
     def __init__(self, smiles, config):
         self.smiles = smiles
@@ -37,8 +39,10 @@ class Molecule(object):
         bond_list = nx.get_edge_attributes(G, 'bond_type')
         for edge in G.edges():
             first, second = edge
-            adj[[first], [second]] = self.possible_bonds.index(bond_list[first, second]) + 1
-            adj[[second], [first]] = self.possible_bonds.index(bond_list[first, second]) + 1
+            adj[[first], [second]] = self.possible_bonds.index(
+                bond_list[first, second]) + 1
+            adj[[second], [first]] = self.possible_bonds.index(
+                bond_list[first, second]) + 1
         return adj
 
     def _get_node_list(self, smiles):

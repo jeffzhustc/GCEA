@@ -5,6 +5,7 @@ from molecule import Molecule
 
 deconfig = Config()
 
+
 def mutate(molecule):
     mutate_rate = deconfig.mutation_rate
     choice = np.random.choice(3, 1, mutate_rate)
@@ -14,6 +15,7 @@ def mutate(molecule):
         return _add_atom_between_bond(molecule)
     if choice[0] == 2:
         return _add_bond(molecule)
+
 
 def _add_bond(molecule):
     if molecule.num_atom < 2:
@@ -34,7 +36,8 @@ def _add_bond(molecule):
                 temp_adj[j][i] += 1
                 goal_adj = temp_adj
                 goal_node_list = molecule.node_list
-                goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
+                goal_mol = adj2mol(goal_node_list, goal_adj.astype(
+                    int), deconfig.possible_bonds)
                 goal_smiles = Chem.MolToSmiles(goal_mol)
                 break
         if goal_mol != None:
@@ -44,6 +47,7 @@ def _add_bond(molecule):
         return Molecule(goal_smiles, deconfig)
     else:
         return molecule
+
 
 def _add_atom_between_bond(molecule):
     temp_elements = deconfig.temp_elements
@@ -61,7 +65,8 @@ def _add_atom_between_bond(molecule):
         if insert_row[i] > 0:
             insert_index2 = i
 
-    temp_adj[insert_index1, insert_index2] = temp_adj[insert_index2, insert_index1] = 0
+    temp_adj[insert_index1,
+             insert_index2] = temp_adj[insert_index2, insert_index1] = 0
 
     goal_adj = np.zeros([length+1, length+1])
     goal_adj[:length, :length] = temp_adj
@@ -72,19 +77,21 @@ def _add_atom_between_bond(molecule):
     temp_node_list.append(atom)
     goal_node_list = temp_node_list
 
-    goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
+    goal_mol = adj2mol(goal_node_list, goal_adj.astype(int),
+                       deconfig.possible_bonds)
     goal_smiles = Chem.MolToSmiles(goal_mol)
 
     return Molecule(goal_smiles, deconfig)
+
 
 def _add_atom(molecule):
     if molecule.num_atom < 1:
         return molecule
 
     temp_node_list = molecule.node_list
-    #print(len(temp_node_list))
+    # print(len(temp_node_list))
     temp_expand_adj = molecule.expand_mat
-    #print(temp_expand_adj.shape[0])
+    # print(temp_expand_adj.shape[0])
     temp_adj = molecule.adj
 
     temp_elements = deconfig.temp_elements
@@ -98,12 +105,13 @@ def _add_atom(molecule):
 
     goal_length = molecule.num_atom + 1
     goal_adj = np.zeros([goal_length, goal_length])
-    goal_adj[:goal_length-1 , :goal_length-1] = temp_adj
+    goal_adj[:goal_length-1, :goal_length-1] = temp_adj
     goal_adj[goal_length-1, mask_index] = goal_adj[mask_index, goal_length-1] = 1
 
     temp_node_list.append(atom)
     goal_node_list = temp_node_list
 
-    goal_mol = adj2mol(goal_node_list, goal_adj.astype(int), deconfig.possible_bonds)
+    goal_mol = adj2mol(goal_node_list, goal_adj.astype(int),
+                       deconfig.possible_bonds)
     goal_smiles = Chem.MolToSmiles(goal_mol)
     return Molecule(goal_smiles, deconfig)

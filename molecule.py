@@ -2,7 +2,6 @@
 from config import Config
 import rdkit.Chem as Chem
 from rdkit.Chem.QED import qed
-from score_util import calc_score
 from utils import *
 import numpy as np
 

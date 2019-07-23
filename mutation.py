@@ -1,6 +1,6 @@
-from score_util import *
 import numpy as np
-from utils import *
+from utils import mask, adj2mol, mol2nx, calc_score
+from config import Config
 from molecule import Molecule
 
 deconfig = Config()
